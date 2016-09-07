@@ -28,21 +28,19 @@
         [self addSubview:self.imageView];
         [self addSubview:self.contentLabel];
         
-        [self.contentLabel mas_makeConstraints:^(MASConstraintMaker *make) {
-            make.bottom.equalTo(@(-30));
-            make.leading.equalTo(@(30));
-            make.trailing.equalTo(@(-30));
-            make.height.equalTo(@(200));
-        }];
-        
         [self.imageView mas_makeConstraints:^(MASConstraintMaker *make) {
-            make.leading.equalTo(@(30));
-            make.bottom.equalTo(self.contentLabel.mas_top).with.offset(-20);
-            make.trailing.equalTo(@(-30));
+            make.leading.equalTo(@(20));
+            make.top.equalTo(@(20));
+            make.trailing.equalTo(@(-20));
             make.height.equalTo(@(200));
         }];
         
-        
+        [self.contentLabel mas_makeConstraints:^(MASConstraintMaker *make) {
+            make.leading.equalTo(@(20));
+            make.top.equalTo(self.imageView.mas_bottom).offset(20);
+            make.trailing.equalTo(@(-20));
+            make.height.equalTo(@(40));
+        }];
     }
     return self;
 }
