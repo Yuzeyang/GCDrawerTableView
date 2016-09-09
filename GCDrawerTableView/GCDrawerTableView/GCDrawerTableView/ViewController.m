@@ -53,13 +53,10 @@
     GCTableViewCell *cell = [self.tableView dequeueReusableCellWithIdentifier:GCTableViewCellIdentifier];
     [cell configCellWithArticleModel:self.dataSource[indexPath.row]];
     [cell addDeselectBlock:^() {
-        for (UIView *subviews in tableView.subviews) {
-            if ([subviews isKindOfClass:NSClassFromString(@"UITableViewWrapperView")]) {
-                for (GCTableViewCell *subcell in subviews.subviews) {
-                    subcell.alpha = 1;
-                }
+        for (UIView *subcell in tableView.visibleCells) {
+            if (subcell != cell) {
+                subcell.alpha = 0;
             }
-            
         }
         tableView.allowsSelection = YES;
         tableView.scrollEnabled = YES;
@@ -77,15 +74,12 @@
     
     GCTableViewCell *cell = [tableView cellForRowAtIndexPath:indexPath];
     [self.tableView bringSubviewToFront:cell];
-    for (UIView *subview in tableView.subviews) {
-        if ([subview isKindOfClass:NSClassFromString(@"UITableViewWrapperView")]) {
-            for (GCTableViewCell *subcell in subview.subviews) {
-                if (subcell != cell) {
-                    subcell.alpha = 0;
-                }
-            }
+    for (UIView *subcell in tableView.visibleCells) {
+        if (subcell != cell) {
+            subcell.alpha = 0;
         }
     }
+    
     tableView.allowsSelection = NO;
     tableView.scrollEnabled = NO;
     [cell selectToShowDetailWithContentOffsetY:tableView.contentOffset.y];
