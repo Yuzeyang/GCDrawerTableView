@@ -55,7 +55,7 @@
     [cell addDeselectBlock:^() {
         for (UIView *subcell in tableView.visibleCells) {
             if (subcell != cell) {
-                subcell.alpha = 0;
+                subcell.alpha = 1;
             }
         }
         tableView.allowsSelection = YES;
