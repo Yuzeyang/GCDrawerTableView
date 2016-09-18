@@ -11,10 +11,12 @@
 
 FOUNDATION_EXPORT NSString *const GCTableViewCellIdentifier;
 
+typedef void(^GCCellSelectBlock)();
 typedef void(^GCCellDeselectBlock)();
 
 @interface GCTableViewCell : UITableViewCell
 
+- (void)addSelectBlock:(GCCellSelectBlock)block;
 - (void)addDeselectBlock:(GCCellDeselectBlock)block;
 - (void)configCellWithArticleModel:(GCArticleModel *)articleModel;
 - (void)selectToShowDetailWithContentOffsetY:(CGFloat)contentOffsetY;

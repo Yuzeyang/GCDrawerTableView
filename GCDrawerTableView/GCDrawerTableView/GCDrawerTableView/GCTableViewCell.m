@@ -29,6 +29,7 @@ NSString *const GCTableViewCellIdentifier = @"GCTableViewCellIdentifier";
 @property (nonatomic, strong) UIView *helperHideView;
 @property (nonatomic, strong) GCDetailView *detailView;
 
+@property (nonatomic, copy) GCCellSelectBlock selectBlock;
 @property (nonatomic, copy) GCCellDeselectBlock deselectBlock;
 
 @property (nonatomic, strong) GCArticleModel *model;
@@ -90,7 +91,8 @@ NSString *const GCTableViewCellIdentifier = @"GCTableViewCellIdentifier";
     
     [self.detailButton setTitle:@"..." forState:UIControlStateNormal];
     [self.detailButton setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
-    [self.detailButton addTarget:self action:@selector(deselectCell) forControlEvents:UIControlEventTouchUpInside];
+    [self.detailButton addTarget:self action:@selector(cellHandle) forControlEvents:UIControlEventTouchUpInside];
+    self.detailButton.tag = 0;
     [self.detailButton mas_makeConstraints:^(MASConstraintMaker *make) {
         make.trailing.equalTo(@(-20));
         make.top.equalTo(self.updateTimeLabel.mas_bottom).with.offset(10);
@@ -123,6 +125,20 @@ NSString *const GCTableViewCellIdentifier = @"GCTableViewCellIdentifier";
     [self.detailView configDetailViewWithArticleModel:articleModel];
 }
 
+- (void)cellHandle {
+    if (self.detailButton.tag) {
+        [self deselectCell];
+    } else {
+         [self selectCell];
+    }
+}
+
+- (void)selectCell {
+    if (_selectBlock) {
+        _selectBlock();
+    }
+}
+
 - (void)deselectCell {
     [UIView animateWithDuration:0.3 animations:^{
         self.frame = self.originCellFrame;
@@ -145,6 +161,7 @@ NSString *const GCTableViewCellIdentifier = @"GCTableViewCellIdentifier";
         if (_deselectBlock) {
             _deselectBlock();
         }
+        self.detailButton.tag = 0;
     }];
     
 }
@@ -185,6 +202,12 @@ NSString *const GCTableViewCellIdentifier = @"GCTableViewCellIdentifier";
         [self addShadowWithView:self.detailView];
         [self.detailButton setTitle:@"×" forState:UIControlStateNormal];
     }];
+    
+    self.detailButton.tag = 1;
+}
+
+- (void)addSelectBlock:(GCCellSelectBlock)block {
+    _selectBlock = block;
 }
 
 - (void)addDeselectBlock:(GCCellDeselectBlock)block {

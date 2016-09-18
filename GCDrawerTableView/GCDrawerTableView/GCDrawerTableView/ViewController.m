@@ -45,6 +45,20 @@
     // Dispose of any resources that can be recreated.
 }
 
+- (void)tableView:(UITableView *)tableView selectCellAtIndexPath:(NSIndexPath *)indexPath {
+    GCTableViewCell *cell = [tableView cellForRowAtIndexPath:indexPath];
+    [self.tableView bringSubviewToFront:cell];
+    for (UIView *subcell in tableView.visibleCells) {
+        if (subcell != cell) {
+            subcell.alpha = 0;
+        }
+    }
+    
+    tableView.allowsSelection = NO;
+    tableView.scrollEnabled = NO;
+    [cell selectToShowDetailWithContentOffsetY:tableView.contentOffset.y];
+}
+
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
     return self.dataSource.count;
 }
@@ -52,6 +66,9 @@
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
     GCTableViewCell *cell = [self.tableView dequeueReusableCellWithIdentifier:GCTableViewCellIdentifier];
     [cell configCellWithArticleModel:self.dataSource[indexPath.row]];
+    [cell addSelectBlock:^{
+        [self tableView:tableView selectCellAtIndexPath:indexPath];
+    }];
     [cell addDeselectBlock:^() {
         for (UIView *subcell in tableView.visibleCells) {
             if (subcell != cell) {
@@ -72,17 +89,19 @@
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
     [tableView deselectRowAtIndexPath:indexPath animated:YES];
     
-    GCTableViewCell *cell = [tableView cellForRowAtIndexPath:indexPath];
-    [self.tableView bringSubviewToFront:cell];
-    for (UIView *subcell in tableView.visibleCells) {
-        if (subcell != cell) {
-            subcell.alpha = 0;
-        }
-    }
+    [self tableView:tableView selectCellAtIndexPath:indexPath];
     
-    tableView.allowsSelection = NO;
-    tableView.scrollEnabled = NO;
-    [cell selectToShowDetailWithContentOffsetY:tableView.contentOffset.y];
+//    GCTableViewCell *cell = [tableView cellForRowAtIndexPath:indexPath];
+//    [self.tableView bringSubviewToFront:cell];
+//    for (UIView *subcell in tableView.visibleCells) {
+//        if (subcell != cell) {
+//            subcell.alpha = 0;
+//        }
+//    }
+//    
+//    tableView.allowsSelection = NO;
+//    tableView.scrollEnabled = NO;
+//    [cell selectToShowDetailWithContentOffsetY:tableView.contentOffset.y];
 }
 
 @end
